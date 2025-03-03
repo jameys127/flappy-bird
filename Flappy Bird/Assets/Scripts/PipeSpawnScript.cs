@@ -8,6 +8,8 @@ public class PipeSpawnScript : MonoBehaviour
     public float spawnRate;
     private float timer = 0;
     public float heightOffset = 10;
+    private bool birdIsAlive = true;
+    public int spawnAtIncreasedSpeedCounter = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +22,7 @@ public class PipeSpawnScript : MonoBehaviour
     {
         if(timer < spawnRate){
             timer += Time.deltaTime;
-        } else {
+        } else if(birdIsAlive) {
             SpawnPipe();
             timer = 0;
         }
@@ -31,6 +33,18 @@ public class PipeSpawnScript : MonoBehaviour
         float lowestPoint = transform.position.y - heightOffset;
         float highestPoint = transform.position.y + heightOffset;
 
-        Instantiate(pipe, new Vector3(transform.position.x, Random.Range(lowestPoint, highestPoint), 0), transform.rotation);
+        GameObject instantiatedPipe = Instantiate(pipe, new Vector3(transform.position.x, Random.Range(lowestPoint, highestPoint), 0), transform.rotation);
+        if(spawnAtIncreasedSpeedCounter >= 1){
+            instantiatedPipe.GetComponent<PipeMoveScript>().IncreaseSpeed(spawnAtIncreasedSpeedCounter);
+        }
     }
+
+    public void IncreaseSpeedCounter(){
+        spawnAtIncreasedSpeedCounter++;
+    }
+
+    public void BirdDied(){
+        birdIsAlive = false;
+    }
+    
 }
